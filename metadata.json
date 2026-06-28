@@ -1,0 +1,6 @@
+{
+  "name": "데드엔드 컴퍼니 소개 사이트",
+  "description": "현대화된 명계 기업 '데드엔드 컴퍼니'의 무협풍 공식 소개 웹사이트. 메인 화면, 14인의 사신 캐릭터 상세 안내, 천인극반 및 명도 체계 세계관 백과사전 수록.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
