@@ -1,13 +1,14 @@
 import React from 'react';
 import { TabType } from '../types';
-import { Clock, BellRing } from 'lucide-react';
+import { Clock, BellRing, Menu } from 'lucide-react';
 
 interface HeaderProps {
   activeTab: TabType;
   selectedDept: string | null;
+  onMenuClick?: () => void;
 }
 
-export const Header: React.FC<HeaderProps> = ({ activeTab, selectedDept }) => {
+export const Header: React.FC<HeaderProps> = ({ activeTab, selectedDept, onMenuClick }) => {
   const getTabName = () => {
     switch (activeTab) {
       case 'main':
@@ -28,14 +29,25 @@ export const Header: React.FC<HeaderProps> = ({ activeTab, selectedDept }) => {
   };
 
   return (
-    <header className="h-20 border-b border-[#2d1212] px-8 flex items-center justify-between bg-[#0a0a0a]/65 backdrop-blur-md sticky top-0 z-10 select-none shadow-sm shrink-0 text-[#e0e0e0]">
-      <div className="flex items-center gap-10">
+    <header className="h-20 border-b border-[#2d1212] px-4 sm:px-8 flex items-center justify-between bg-[#0a0a0a]/65 backdrop-blur-md sticky top-0 z-10 select-none shadow-sm shrink-0 text-[#e0e0e0]">
+      <div className="flex items-center gap-2 sm:gap-10">
+        {/* Mobile Menu Open Button */}
+        {onMenuClick && (
+          <button
+            onClick={onMenuClick}
+            className="md:hidden p-2 text-[#e11d48] hover:bg-[#1a0808] border border-[#7f1d1d]/30 rounded mr-1"
+            aria-label="Open sidebar menu"
+          >
+            <Menu className="w-5 h-5" />
+          </button>
+        )}
+
         <div>
           <p className="text-[10px] uppercase text-red-500 font-mono font-bold tracking-widest flex items-center gap-1.5">
             <span className="w-1.5 h-1.5 bg-red-600 inline-block" />
             열람 중인 사규 문서
           </p>
-          <h2 className="text-base sm:text-lg font-black tracking-tight text-white font-serif mt-0.5">
+          <h2 className="text-sm sm:text-lg font-black tracking-tight text-white font-serif mt-0.5 truncate max-w-[180px] xs:max-w-[240px] sm:max-w-none">
             {getTabName()}
           </h2>
         </div>

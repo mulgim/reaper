@@ -1,12 +1,14 @@
 import React from 'react';
 import { TabType } from '../types';
-import { Shield, Users, BookOpen, Sparkles, Building2, Swords, ShieldCheck, Ghost } from 'lucide-react';
+import { Shield, Users, BookOpen, Sparkles, Building2, Swords, ShieldCheck, Ghost, X } from 'lucide-react';
 
 interface SidebarProps {
   activeTab: TabType;
   setActiveTab: (tab: TabType) => void;
   selectedDept: string | null;
   setSelectedDept: (dept: string | null) => void;
+  isOpen?: boolean;
+  onClose?: () => void;
 }
 
 export const Sidebar: React.FC<SidebarProps> = ({
@@ -14,6 +16,8 @@ export const Sidebar: React.FC<SidebarProps> = ({
   setActiveTab,
   selectedDept,
   setSelectedDept,
+  isOpen = false,
+  onClose,
 }) => {
   const menuItems = [
     { id: 'main' as TabType, label: '01. 회사 소개 및 메인', icon: Building2 },
@@ -26,11 +30,37 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
   const depts = ['토벌팀', '인도팀', '판결팀', '총무팀', '개발팀', '구내식당', 'CEO 직할'];
 
+  const handleTabClick = (tabId: TabType) => {
+    setActiveTab(tabId);
+    if (tabId !== 'characters') setSelectedDept(null);
+    if (onClose) onClose();
+  };
+
+  const handleDeptClick = (deptName: string) => {
+    const isSelected = selectedDept === deptName;
+    setSelectedDept(isSelected ? null : deptName);
+    if (activeTab !== 'characters') setActiveTab('characters');
+    if (onClose) onClose();
+  };
+
   return (
-    <nav className="w-64 bg-[#0a0a0a]/75 backdrop-blur-md text-gray-200 h-full flex flex-col justify-between p-6 border-r border-[#2d1212] select-none shrink-0 shadow-2xl z-20 overflow-y-auto">
+    <nav className={`fixed md:static inset-y-0 left-0 z-40 w-64 bg-[#0a0a0a]/95 md:bg-[#0a0a0a]/75 backdrop-blur-md text-gray-200 h-full flex flex-col justify-between p-6 border-r border-[#2d1212] select-none shrink-0 shadow-2xl transition-transform duration-300 overflow-y-auto ${
+      isOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'
+    }`}>
       <div className="space-y-8">
         {/* Company Brand Header */}
-        <div className="border-b border-[#7f1d1d]/80 pb-5">
+        <div className="border-b border-[#7f1d1d]/80 pb-5 relative">
+          {/* Mobile Close Button */}
+          {onClose && (
+            <button
+              onClick={onClose}
+              className="absolute right-0 top-0 p-1 md:hidden text-gray-400 hover:text-white"
+              aria-label="Close sidebar"
+            >
+              <X className="w-5 h-5" />
+            </button>
+          )}
+
           <div className="flex items-center gap-2 mb-2 text-[#e11d48]">
             <Sparkles className="w-4 h-4 animate-spin-slow" />
             <span className="text-[10px] font-mono tracking-[0.25em] uppercase font-bold">Dead End Co.</span>
@@ -56,10 +86,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
               return (
                 <li key={item.id}>
                   <button
-                    onClick={() => {
-                      setActiveTab(item.id);
-                      if (item.id !== 'characters') setSelectedDept(null);
-                    }}
+                    onClick={() => handleTabClick(item.id)}
                     className={`w-full flex items-center gap-3 px-3 py-3 text-left transition-all duration-200 border ${
                       isActive
                         ? 'bg-[#1c0808] text-[#e11d48] border-[#7f1d1d] translate-x-1 shadow-[4px_4px_0px_#7f1d1d]'
@@ -86,7 +113,10 @@ export const Sidebar: React.FC<SidebarProps> = ({
             <span>부서별 사신 검색</span>
             {selectedDept && (
               <button 
-                onClick={() => setSelectedDept(null)}
+                onClick={() => {
+                  setSelectedDept(null);
+                  if (onClose) onClose();
+                }}
                 className="text-[#f43f5e] hover:underline text-[9px]"
               >
                 전체보기
@@ -99,10 +129,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
               return (
                 <button
                   key={dept}
-                  onClick={() => {
-                    setSelectedDept(isSelected ? null : dept);
-                    if (activeTab !== 'characters') setActiveTab('characters');
-                  }}
+                  onClick={() => handleDeptClick(dept)}
                   className={`text-[10px] px-2.5 py-1 transition-all border font-serif ${
                     isSelected
                       ? 'bg-[#7f1d1d] text-white font-black border-[#991b1b] shadow-[2px_2px_0px_#450a0a]'

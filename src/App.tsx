@@ -21,10 +21,19 @@ export default function App() {
   const [activeTab, setActiveTab] = useState<TabType>('main');
   const [selectedDept, setSelectedDept] = useState<string | null>(null);
   const [modalCharacter, setModalCharacter] = useState<Character | null>(null);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   return (
     <div className="h-screen w-full bg-[#070707] text-[#e0e0e0] flex flex-col md:flex-row font-serif select-none border-4 sm:border-8 border-[#161616] overflow-hidden relative">
       <HanjaRain />
+
+      {/* Mobile Menu Backdrop Overlay */}
+      {isMobileMenuOpen && (
+        <div
+          className="fixed inset-0 bg-black/70 backdrop-blur-sm z-30 md:hidden"
+          onClick={() => setIsMobileMenuOpen(false)}
+        />
+      )}
       
       {/* 1. Left Sidebar Navigation */}
       <Sidebar
@@ -32,13 +41,19 @@ export default function App() {
         setActiveTab={setActiveTab}
         selectedDept={selectedDept}
         setSelectedDept={setSelectedDept}
+        isOpen={isMobileMenuOpen}
+        onClose={() => setIsMobileMenuOpen(false)}
       />
 
       {/* 2. Main Right Viewport */}
       <main className="flex-1 flex flex-col relative overflow-hidden h-full bg-[#0d0d0d]/40 backdrop-blur-[1px]">
         
         {/* Top Sticky Header */}
-        <Header activeTab={activeTab} selectedDept={selectedDept} />
+        <Header 
+          activeTab={activeTab} 
+          selectedDept={selectedDept} 
+          onMenuClick={() => setIsMobileMenuOpen(true)} 
+        />
 
         {/* Dynamic Viewport Canvas */}
         <div className="flex-1 flex flex-col overflow-hidden relative">
